@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerar Nordeste para Cristo</title>
+
+  <style>
+    html {
+      width: 100%;
+      height: 100%;
+      font-family: sans-serif;
+    }
+
+    body {
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(#cccccc, #f6f6f6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .container {
+      width: 500px;
+      background-color: #FFFFFF;
+      box-shadow: 5px 5px 20px #c1c1c1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 30px;
+    }
+
+    .form {
+      width: 100%;
+    }
+
+    .button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 50px;
+      background-image: linear-gradient(#008ee7, #19a7ff);
+      border: none;
+      color: #FFFFFF;
+      font-weight: bold;
+      margin-top: 25px;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-image: linear-gradient(#19a7ff, #008ee7);
+      transition: 0.7s;
+    }
+
+    h1 {
+      color: #258ac8;
+    }
+
+    .checks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12pt;
+      color: rgb(70, 70, 70);
+      font-weight: bold;
+    }
+
+    #preview {
+      width: 100%;
+    }
+
+    @media only screen and (max-width: 700px) {
+      .container {
+        width: 80%;
+      }
+
+      .checks {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+    }
+
+    @media only screen and (max-width: 1170px) {
+      .content {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Gerar Imagens - Pedido de Oração</h1>
+  <div class="content">
+    <div class="container">
+      <div class="form">
+        <div class="checks">
+          <div>
+            <input type="checkbox" id="postarStory">
+            <label for="scales">Postar Story</label>
+          </div>
+          <div>
+            <input type="checkbox" id="enviarWhatsapp">
+            <label for="scales">Enviar pelo WhatsApp</label>
+          </div>
+        </div>
+        <button class="button" onclick="postGenerate()">Gerar</button>
+      </div>
+    </div>
+
+    <div class="container" style="display: none;">
+      <img id="preview">
+    </div>
+  </div>
+</body>
+
+</html>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function postGenerate() {
+    const httpStatus = { BAD_REQUEST: 400 }
+    const postarStory = document.querySelector('#postarStory').checked;
+    const enviarWhatsapp = document.querySelector('#enviarWhatsapp').checked;
+
+    fetch('generate', {
+      method: 'post',
+      body: JSON.stringify({ postarStory, enviarWhatsapp })
+    })
+      .then(function (response) {
+        response.json().then(function (data) {
+          if (response.status === httpStatus.BAD_REQUEST) {
+            return Swal.fire({
+              title: 'Ops',
+              text: data.error,
+              icon: 'error',
+            })
+          }
+
+          Swal.fire({
+            title: 'Sucesso!',
+            text: data.msg,
+            icon: 'success',
+          })
+        });
+      });
+  }
+</script>
